@@ -11,7 +11,7 @@
 ### 从源码构建
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/QiaoLeiLei/ql-cli.git
 cd ql-cli
 go build -o ql .
 ```
