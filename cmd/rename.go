@@ -11,9 +11,6 @@ import (
 )
 
 var (
-	dir       string
-	recursive bool
-	dryRun    bool
 	from      string
 	to        string
 	useRegex  bool
@@ -23,7 +20,6 @@ var (
 	toUpper   bool
 	clean     bool
 	removeExt bool
-	filter    string
 )
 
 var renameCmd = &cobra.Command{
@@ -40,6 +36,7 @@ var renameCmd = &cobra.Command{
 }
 
 func init() {
+	addCommonDirFlags(renameCmd)
 	renameCmd.Flags().StringVarP(&dir, "dir", "d", ".", "要处理的目录路径")
 	renameCmd.Flags().BoolVarP(&recursive, "recursive", "r", false, "是否递归处理子目录")
 	renameCmd.Flags().BoolVar(&dryRun, "dry-run", false, "仅预览修改,不实际执行")
@@ -52,7 +49,6 @@ func init() {
 	renameCmd.Flags().BoolVar(&toUpper, "to-upper", false, "文件名转大写")
 	renameCmd.Flags().BoolVar(&clean, "clean", false, "清理特殊字符(只保留英文字母、数字、下划线、连字符和中文汉字以及括号)")
 	renameCmd.Flags().BoolVar(&removeExt, "remove-ext", false, "移除扩展名")
-	renameCmd.Flags().StringVar(&filter, "filter", "", "仅处理匹配扩展名的文件(如 .jpg)")
 
 	rootCmd.AddCommand(renameCmd)
 
@@ -183,17 +179,18 @@ func traverseDir(absDir string) error {
 		name := info.Name()
 
 		// 如果指定了文件扩展名过滤器，则仅处理匹配的文件
-		if filter != "" {
-			filterExt := filter
-			// 确保过滤器以 "." 开头，例如 "txt" → ".txt"
-			if !strings.HasPrefix(filterExt, ".") {
-				filterExt = "." + filterExt
+		if filter != nil {
+			// 检查文件扩展名是否在过滤器列表中
+			for _, ext := range filter {
+				// 确保过滤器以 "." 开头，例如 "txt" → ".txt"
+				if !strings.HasPrefix(ext, ".") {
+					ext = "." + ext
+				}
+				if strings.EqualFold(filepath.Ext(name), ext) {
+					return nil
+				}
 			}
-			fileExt := filepath.Ext(name)
-			// 忽略大小写比较文件扩展名，不匹配则跳过该文件
-			if !strings.EqualFold(fileExt, filterExt) {
-				return nil
-			}
+			return filepath.SkipDir // 如果不在列表中，跳过该目录，不再向下遍历
 		}
 
 		newName := computeNewName(name)
