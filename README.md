@@ -28,56 +28,20 @@ go run main.go rename --help
 
 遍历指定目录，批量修改文件名。支持查找替换、正则匹配、添加前后缀、大小写转换等操作。
 
+
+
 #### 基本用法
 
 ```bash
 ql rename -d ./files --from "IMG_" --to "Photo_"
 ```
+### `move` — 批量移动文件
 
-#### 所有参数
+遍历指定目录，批量移动文件指定类型文件到目标目录。如果目标目录不存在，会自动创建。
 
-| 参数 | 缩写 | 类型 | 默认值 | 说明 |
-|------|------|------|--------|------|
-| `--dir` | `-d` | string | `.` | 要处理的目录路径 |
-| `--recursive` | `-r` | bool | `false` | 是否递归处理子目录 |
-| `--dry-run` | | bool | `false` | 仅预览修改，不实际执行 |
-| `--from` | | string | | 要查找的文本 |
-| `--to` | | string | | 替换为的文本 |
-| `--regex` | | bool | `true` | 是否使用正则表达式匹配 |
-| `--prefix` | | string | | 添加文件名前缀 |
-| `--suffix` | | string | | 添加文件名后缀（在扩展名前） |
-| `--to-lower` | | bool | `false` | 文件名转小写 |
-| `--to-upper` | | bool | `false` | 文件名转大写 |
-| `--clean` | | bool | `false` | 清理特殊字符（只保留英文字母、数字、下划线、连字符、中文汉字及括号） |
-| `--remove-ext` | | bool | `false` | 移除扩展名 |
-| `--filter` | | string | | 仅处理匹配扩展名的文件（如 `.jpg`） |
-
-#### 使用示例
-
+#### 基本用法
 ```bash
-# 普通文本替换
-ql rename -d ./files --from "IMG_" --to "Photo_"
-
-# 正则表达式替换，$1 引用捕获组（单引号防止 shell 转义 $ 符号）
-ql rename -d ./files --regex --from 'IMG_(\d+)' --to 'Photo_$1'
-
-# 添加前缀
-ql rename -d ./files --prefix "2024_"
-
-# 添加后缀（在扩展名前）
-ql rename -d ./files --suffix "_backup"
-
-# 指定JPG文件名转小写
-ql rename -d ./files --to-lower --filter ".JPG" 
-
-# 清理特殊字符 + 移除扩展名
-ql rename -d ./files --clean --remove-ext
-
-# 递归处理子目录
-ql rename -d ./files -r --from "old" --to "new"
-
-# 预览模式，不实际执行
-ql rename -d ./files --from "A" --to "B" --dry-run
+ql move -d ./files --filter ".jpg" --dst "./backup"
 ```
 
 ### `completion` — 生成 Shell 补全脚本

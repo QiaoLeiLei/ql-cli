@@ -37,9 +37,6 @@ var renameCmd = &cobra.Command{
 
 func init() {
 	addCommonDirFlags(renameCmd)
-	renameCmd.Flags().StringVarP(&dir, "dir", "d", ".", "要处理的目录路径")
-	renameCmd.Flags().BoolVarP(&recursive, "recursive", "r", false, "是否递归处理子目录")
-	renameCmd.Flags().BoolVar(&dryRun, "dry-run", false, "仅预览修改,不实际执行")
 	renameCmd.Flags().StringVar(&from, "from", "", "要查找的文本")
 	renameCmd.Flags().StringVar(&to, "to", "", "替换为的文本")
 	renameCmd.Flags().BoolVar(&useRegex, "regex", true, "是否使用正则表达式匹配")
@@ -52,14 +49,14 @@ func init() {
 
 	rootCmd.AddCommand(renameCmd)
 
-	_ = renameCmd.RegisterFlagCompletionFunc("dir", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-		return nil, cobra.ShellCompDirectiveFilterDirs
-	})
-
-	_ = renameCmd.RegisterFlagCompletionFunc("filter", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-		extensions := []string{".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".tiff", ".svg", ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".txt", ".md", ".csv", ".json", ".xml", ".html", ".css", ".js", ".ts", ".go", ".py", ".java", ".c", ".cpp", ".h", ".rs", ".rb", ".php", ".zip", ".tar", ".gz", ".rar", ".7z", ".mp3", ".mp4", ".mov", ".avi", ".mkv"}
-		return extensions, cobra.ShellCompDirectiveNoFileComp
-	})
+	//_ = renameCmd.RegisterFlagCompletionFunc("dir", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+	//	return nil, cobra.ShellCompDirectiveFilterDirs
+	//})
+	//
+	//_ = renameCmd.RegisterFlagCompletionFunc("filter", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+	//	extensions := []string{".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".tiff", ".svg", ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".txt", ".md", ".csv", ".json", ".xml", ".html", ".css", ".js", ".ts", ".go", ".py", ".java", ".c", ".cpp", ".h", ".rs", ".rb", ".php", ".zip", ".tar", ".gz", ".rar", ".7z", ".mp3", ".mp4", ".mov", ".avi", ".mkv"}
+	//	return extensions, cobra.ShellCompDirectiveNoFileComp
+	//})
 }
 
 // 白名单正则：只保留英文字母、数字、下划线、连字符和中文汉字以及括号
@@ -189,7 +186,7 @@ func traverseDir(absDir string) error {
 						if !strings.HasPrefix(subExt, ".") {
 							subExt = "." + subExt
 						}
-						if strings.EqualFold(filepath.Ext(name), subExt) {
+						if !strings.EqualFold(filepath.Ext(name), subExt) {
 							count++
 							return nil
 						}
@@ -199,11 +196,10 @@ func traverseDir(absDir string) error {
 				if !strings.HasPrefix(ext, ".") {
 					ext = "." + ext
 				}
-				if strings.EqualFold(filepath.Ext(name), ext) {
+				if !strings.EqualFold(filepath.Ext(name), ext) {
 					return nil
 				}
 			}
-			return filepath.SkipDir // 如果不在列表中，跳过该目录，不再向下遍历
 		}
 
 		newName := computeNewName(name)
