@@ -182,6 +182,19 @@ func traverseDir(absDir string) error {
 		if filter != nil {
 			// 检查文件扩展名是否在过滤器列表中
 			for _, ext := range filter {
+				// 允许指定多个扩展名，用逗号分隔
+				if strings.Contains(ext, ",") {
+					for _, subExt := range strings.Split(ext, ",") {
+						// 确保过滤器以 "." 开头，例如 "txt" → ".txt"
+						if !strings.HasPrefix(subExt, ".") {
+							subExt = "." + subExt
+						}
+						if strings.EqualFold(filepath.Ext(name), subExt) {
+							count++
+							return nil
+						}
+					}
+				}
 				// 确保过滤器以 "." 开头，例如 "txt" → ".txt"
 				if !strings.HasPrefix(ext, ".") {
 					ext = "." + ext
