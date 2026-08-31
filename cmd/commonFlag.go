@@ -9,6 +9,7 @@ var (
 	dryRun    bool
 	filter    []string
 	outDir    string
+	keepDir   bool
 )
 
 // addCommonDirFlags 注册通用的目录相关 flags 到指定命令
@@ -21,4 +22,8 @@ func addCommonDirFlags(cmd *cobra.Command) {
 
 func addOutFlag(cmd *cobra.Command) {
 	cmd.Flags().StringVarP(&outDir, "out", "o", ".", "输出目录")
+}
+
+func addKeepDirFlag(cmd *cobra.Command) {
+	cmd.Flags().BoolVarP(&keepDir, "keep-dir", "k", false, "保留目录结构")
 }

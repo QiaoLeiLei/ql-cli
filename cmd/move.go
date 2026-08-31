@@ -9,9 +9,6 @@ import (
 	"strings"
 )
 
-var (
-	keepDir bool
-)
 var moveCmd = &cobra.Command{
 	Use:   "move",
 	Short: "移动文件到指定目录",
@@ -22,7 +19,7 @@ var moveCmd = &cobra.Command{
 func init() {
 	addCommonDirFlags(moveCmd)
 	addOutFlag(moveCmd)
-	moveCmd.Flags().BoolVarP(&keepDir, "keep-dir", "k", false, "是否保留文件结构")
+	addKeepDirFlag(moveCmd)
 	rootCmd.AddCommand(moveCmd)
 }
 
@@ -37,6 +34,10 @@ func runMove(cmd *cobra.Command, args []string) error {
 	if !ok {
 		twd, _ := os.Getwd()
 		outDir = filepath.Join(twd, outDir)
+	}
+
+	if absDir == outDir {
+		return fmt.Errorf("目标目录不能与源目录相同")
 	}
 
 	if dryRun {
