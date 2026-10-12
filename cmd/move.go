@@ -2,11 +2,12 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"os"
 	"path/filepath"
-	"ql-cli/util"
 	"strings"
+
+	"github.com/QiaoLeiLei/ql/util"
+	"github.com/spf13/cobra"
 )
 
 var moveCmd = &cobra.Command{

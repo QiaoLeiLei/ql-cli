@@ -1,4 +1,4 @@
-module ql-cli
+module github.com/QiaoLeiLei/ql
 
 go 1.26.5
 
