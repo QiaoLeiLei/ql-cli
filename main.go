@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/QiaoLeiLei/ql/cmd"
+	"github.com/QiaoLeiLei/ql-cli/cmd"
 )
 
 func main() {

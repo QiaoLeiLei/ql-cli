@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/QiaoLeiLei/ql/util"
+	"github.com/QiaoLeiLei/ql-cli/util"
 	"github.com/spf13/cobra"
 )
 
